@@ -11,12 +11,11 @@ import com.sun.net.httpserver.*;
 public class CustomHandler  implements HttpHandler {
 
 
-    /*
-     * Usage: handle a client request
-     *
-     * Input:
-     *    exchange = request/response object
-     *
+
+    /**
+     * A custom handler for client requests
+     * @param exchange can be the request or the response object
+     * @throws IOException
      */
         public void handle(HttpExchange exchange) throws IOException {
 
@@ -33,8 +32,7 @@ public class CustomHandler  implements HttpHandler {
                     System.out.println("New login request received for the user" +
                             (String)params.get("userid"));
 
-                    response = SessionService.SERVICE.getSessionKey(
-                            Integer.parseInt((String)params.get("userid")));
+                    response = SessionService.SERVICE.getSessionKey(Integer.parseInt((String)params.get("userid")));
 
                     if(response == null) statusCode = 500; // Server error
                 }

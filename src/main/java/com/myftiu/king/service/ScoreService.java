@@ -66,8 +66,7 @@ public enum ScoreService {
 
                     // New level for existing user
 
-                    addScore = Collections.synchronizedList(
-                            new ArrayList<Integer>());
+                    addScore = Collections.synchronizedList(new ArrayList<Integer>());
 
                     addScore.add(score);
                     storedUserLevels.put(level, addScore);
@@ -103,7 +102,7 @@ public enum ScoreService {
     public String getHighestScores(int level) {
 
         Iterator<Integer> userIter = null;
-        Map<Integer,Integer> scoreResults = new TreeMap<Integer,Integer>();
+        List<Score> scoreResults = new ArrayList<Score>();
         int user = 0;
         Integer userMaxScore = 0;
 
@@ -123,13 +122,15 @@ public enum ScoreService {
                     // I enter here if there is a score for this user at the requested level
 
                     userMaxScore = Collections.max(users.get(user).get(level));
+                    scoreResults.add(new Score(user, userMaxScore));
 
-                    scoreResults.put(user,userMaxScore); // Get only the highest score
                 }
             }
         }
 
-        return retrieveBestScores(scoreResults);
+        String bestResult = retrieveBestScores(scoreResults);
+
+        return bestResult;
     }
 
     /*
@@ -143,32 +144,26 @@ public enum ScoreService {
      *    String containing the best scores (in inverse order)
      *        (format: user=score\r\nuser=score...)
      */
-    private String retrieveBestScores(Map<Integer,Integer> scores) {
+    private String retrieveBestScores(List<Score> scores) {
 
         int user = 0;
         int contRes = 0;
         String resScores = null;
 
-        // Map to order the scores by value (in desc order)
-        TreeMap<Integer,Integer> sortedScores =
-                new TreeMap<Integer,Integer>(new Score(scores));
+        List<Score> scoreList = new ArrayList<Score>();
 
-        sortedScores.putAll(scores);
+        scoreList.addAll(scores);
 
-        Iterator<Integer> scoreIter = sortedScores.keySet().iterator();
-
-        // I read all the scores starting from the highest
-        while(scoreIter.hasNext()) {
-
-            user = scoreIter.next();
-
+        for(Score score: scores) {
             if (resScores == null)
-                resScores = user + "=" + sortedScores.get(user).intValue() + "\r\n";
+                resScores = user + "=" + score.getUserId() + "\r\n";
             else
-                resScores += user + "=" + sortedScores.get(user).intValue() + "\r\n";
+                resScores += user + "=" + score.getUserId() + "\r\n";
 
-            if (++contRes >= numHighestScores) break; // Once got the max num of scores, exits
+            if (++contRes >= numHighestScores) break;
         }
+
+
 
         return resScores;
     }

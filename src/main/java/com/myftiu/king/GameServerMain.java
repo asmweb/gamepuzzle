@@ -1,4 +1,4 @@
-package com.myftiu.king.server;
+package com.myftiu.king;
 
 import com.myftiu.king.filter.CustomFilter;
 import com.myftiu.king.service.CustomHandler;
@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by myftiu on 04/11/14.
  */
-public class GameServer {
+public class GameServerMain {
 
 
     private static int port = 8009;

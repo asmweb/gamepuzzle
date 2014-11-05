@@ -1,5 +1,6 @@
 package com.myftiu.king.service;
 
+import com.myftiu.king.model.Session;
 import com.myftiu.king.utils.*;
 
 import java.util.Calendar;
@@ -15,9 +16,9 @@ public enum SessionService {
     SERVICE ;
 
 
-    volatile private Map<String,SessionUtil> usedSessionKeys = new ConcurrentHashMap<String,SessionUtil>();
+    volatile private Map<String,Session> usedSessionKeys = new ConcurrentHashMap<String,Session>();
     Calendar cal = Calendar.getInstance();
-    private MathUtil calc = new MathUtil();;
+    private SessionUtil calc = new SessionUtil();;
     private long lastCleanup = cal.getTimeInMillis();;
 
 
@@ -43,7 +44,7 @@ public enum SessionService {
         if (user < 0) return null;
 
         Calendar cal = Calendar.getInstance();
-        SessionUtil session = new SessionUtil(cal.getTimeInMillis(), user);
+        Session session = new Session(cal.getTimeInMillis(), user);
 
         String sessionKey = calc.createSessionKey();
         usedSessionKeys.put(sessionKey, session);
@@ -67,7 +68,7 @@ public enum SessionService {
             return -1;
 
         Calendar cal = Calendar.getInstance();
-        SessionUtil session = usedSessionKeys.get(sessionKey);
+        Session session = usedSessionKeys.get(sessionKey);
 
         long currentTime = cal.getTimeInMillis();
 
