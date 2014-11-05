@@ -7,8 +7,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
-import com.myftiu.king.utils.MiscUtil;
+import com.myftiu.king.utils.ServerUtil;
 import com.sun.net.httpserver.*;
 
 
@@ -17,81 +18,78 @@ import com.sun.net.httpserver.*;
  */
 public class CustomFilter extends Filter {
 
-        MiscUtil utils;
+        ServerUtil utils;
 
         public CustomFilter() {
-            utils = new MiscUtil();
+            this.utils = new ServerUtil();
         }
 
-        /*
-         * Usage: filter the request before to be handled and prepare the
-         *     parameters
-         *
-         * Input:
-         *    exchange = request/response object
-         *
-         */
-        @Override
-        public void doFilter(HttpExchange exchange, Chain chain)
-                throws IOException {
+    /**
+     * Performs different parsings
+     * @param exchange
+     * @param chain
+     * @throws IOException
+     */
+        public void doFilter(HttpExchange exchange, Chain chain) throws IOException {
             parseGetParameters(exchange);
             parsePostParameters(exchange);
             parseUrlEncodedParameters(exchange);
             chain.doFilter(exchange);
         }
 
-        /*
-         * Usage: retrieve the GET parameters
-         *
-         * Input:
-         *    exchange = request/response object
-         *
-         */
+
+    /**
+     * Get parameters are parsed and saved into the parameter map
+     * @param exchange
+     * @throws UnsupportedEncodingException
+     */
         private void parseGetParameters(HttpExchange exchange)
                 throws UnsupportedEncodingException {
 
             Map<String, Object> parameters = new HashMap<String, Object>();
             URI requestedUri = exchange.getRequestURI();
             String query = requestedUri.getRawQuery();
-            utils.parseQuery(query, parameters);
+            utils.parseRequest(query, parameters);
             exchange.setAttribute("parameters", parameters);
         }
 
-        /*
-         * Usage: retrieve the POST parameters
-         *
-         * Input:
-         *    exchange = request/response object
-         *
-         */
+
+
+    /**
+     * post parameters are parsed and saved into the parameter map
+     * @param exchange
+     * @throws IOException
+     */
         private void parsePostParameters(HttpExchange exchange)
                 throws IOException {
 
             if ("post".equalsIgnoreCase(exchange.getRequestMethod())) {
                 @SuppressWarnings("unchecked")
-                Map<String, Object> parameters =
-                        (Map<String, Object>)exchange.getAttribute("parameters");
-                InputStreamReader isr =
-                        new InputStreamReader(exchange.getRequestBody(),"utf-8");
+                Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");
+
+                InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(),"utf-8");
                 BufferedReader br = new BufferedReader(isr);
                 String query = br.readLine();
-                utils.parseQuery(query, parameters);
+
+                //Scanner scanner = new Scanner(exchange.getRequestBody());
+                //String query = scanner.nextLine();
+                utils.parseRequest(query, parameters);
+                exchange.setAttribute("parameters", parameters);
             }
         }
 
-        /*
-         * Usage: retrieve the URL encoded parameters
-         *
-         * Input:
-         *    exchange = request/response object
-         *
-         */
+
+
+    /**
+     * the encoded parameters are saved in the HttpExchange as attributes
+     * @param exchange
+     * @throws UnsupportedEncodingException
+     */
         private void parseUrlEncodedParameters(HttpExchange exchange)
                 throws UnsupportedEncodingException {
 
             @SuppressWarnings("unchecked")
-            Map<String, Object> parameters =
-                    (Map<String, Object>)exchange.getAttribute("parameters");
+            Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");
 
             String uri = exchange.getRequestURI().toString();
             String[] tokens = uri.split("[/?=]");
@@ -105,17 +103,17 @@ public class CustomFilter extends Filter {
                     parameters.put("request",tokens[2]);
                 }
                 else {
-                    parameters.put("request","not supported");
+                    parameters.put("request","request is not part of the api");
                 }
             }
             else {
-                parameters.put("request","not supported");
+                parameters.put("request","request is not part of the api");
             }
         }
 
         @Override
         public String description() {
-            return "Class to retrieve Get/Post parameters";
+            return "Custom filtering for retrieving correctly the parameters for get/post";
         }
 
 }

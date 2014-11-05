@@ -12,27 +12,26 @@ public class CustomHandler  implements HttpHandler {
 
 
 
-    /**
-     * A custom handler for client requests
-     * @param exchange can be the request or the response object
-     * @throws IOException
-     */
+        /**
+         * A custom handler for client requests
+         * @param exchange can be the request or the response object
+         * @throws IOException
+         */
         public void handle(HttpExchange exchange) throws IOException {
 
             String response = null;
             int statusCode = 200;
 
             try {
-                @SuppressWarnings("unchecked")
+
                 Map<String, Object> params = (Map<String, Object>)exchange.getAttribute("parameters");
 
                 if (params.get("request").equals("login")) {
 
                     // The user is logging-in, asking for a session key
-                    System.out.println("New login request received for the user" +
-                            (String)params.get("userid"));
+                    System.out.println("New login request received for the user" + (String)params.get("userid"));
 
-                    response = SessionService.SERVICE.getSessionKey(Integer.parseInt((String)params.get("userid")));
+                    response = SessionService.SERVICE.createSession(Integer.parseInt((String) params.get("userid")));
 
                     if(response == null) statusCode = 500; // Server error
                 }
@@ -45,8 +44,10 @@ public class CustomHandler  implements HttpHandler {
                     int userId = SessionService.SERVICE.validateSessionKey(
                             (String)params.get("sessionkey"));
 
-                    if (userId  == -1)
-                        statusCode = 401; // Unhautorized user
+                    if (userId  == -1)    {
+                        statusCode = 401;
+                        response = "unauthorized user";
+                    }
                     else if(ScoreService.SCORE.insertScore(
                             userId, Integer.parseInt((String)params.get("levelid")),
                             Integer.parseInt((String)params.get("score"))) == -1)
@@ -81,18 +82,21 @@ public class CustomHandler  implements HttpHandler {
                 statusCode = 400;
                 response = exception.getMessage().toString();
                 System.out.println(response);
+            } finally {
+
+                if (response != null)
+                    exchange.sendResponseHeaders(statusCode, response.length());
+                else
+                    exchange.sendResponseHeaders(statusCode, 0);
+
+                // Send the body response
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.toString().getBytes());
+                os.close();
             }
 
-            // Send the header response
-            if (response != null)
-                exchange.sendResponseHeaders(statusCode, response.length());
-            else
-                exchange.sendResponseHeaders(statusCode, 0);
 
-            // Send the body response
-            OutputStream os = exchange.getResponseBody();
-            os.write(response.toString().getBytes());
-            os.close();
+
         }
 
 }

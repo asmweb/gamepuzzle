@@ -13,17 +13,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public enum SessionService {
 
-    SERVICE ;
+    SERVICE;
 
 
-    volatile private Map<String,Session> usedSessionKeys = new ConcurrentHashMap<String,Session>();
-    Calendar cal = Calendar.getInstance();
-    private SessionUtil calc = new SessionUtil();;
-    private long lastCleanup = cal.getTimeInMillis();;
+    private volatile Map<String,Session> usedSessionKeys = new ConcurrentHashMap<String,Session>();
+    private long lastCleanup = Calendar.getInstance().getTimeInMillis();
 
 
     private final long cleanupEverySecs = 1000 * 60 * 15; // 15 minutes;
-    private final long maxSessionInSecs = 1000 * 60 * 10; // 10 minutes
+    private final long MAX_SESSION_TIME = 1000 * 60 * 10; // 10 minutes
 
 
 
@@ -39,14 +37,17 @@ public enum SessionService {
      *    null Error
      *    String containing a new session key in base 32
      */
-    public String getSessionKey(int user)
+    public String createSession(int user)
     {
+        SessionUtil sessionUtils = new SessionUtil();
+
+
         if (user < 0) return null;
 
         Calendar cal = Calendar.getInstance();
         Session session = new Session(cal.getTimeInMillis(), user);
 
-        String sessionKey = calc.createSessionKey();
+        String sessionKey = sessionUtils.createSessionKey();
         usedSessionKeys.put(sessionKey, session);
 
         return sessionKey;
@@ -68,6 +69,7 @@ public enum SessionService {
             return -1;
 
         Calendar cal = Calendar.getInstance();
+        boolean val = usedSessionKeys.containsKey(sessionKey);
         Session session = usedSessionKeys.get(sessionKey);
 
         long currentTime = cal.getTimeInMillis();
@@ -75,7 +77,7 @@ public enum SessionService {
         if (session == null) {
             // SessionKey not valid
             return -1;
-        } else if (currentTime - session.getStoredTime() > maxSessionInSecs) {
+        } else if (currentTime - session.getStoredTime() > MAX_SESSION_TIME) {
             // Session elapsed
             return -1;
         }
@@ -98,7 +100,7 @@ public enum SessionService {
 
         while(iter.hasNext()) { // For each seassion...
             key = iter.next();
-            if (lastCleanup - usedSessionKeys.get(key).getStoredTime() > maxSessionInSecs) {
+            if (lastCleanup - usedSessionKeys.get(key).getStoredTime() > MAX_SESSION_TIME) {
                 usedSessionKeys.remove(key);
             }
         }
