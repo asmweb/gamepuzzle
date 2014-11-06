@@ -5,6 +5,7 @@ import com.myftiu.king.model.Session;
 import com.myftiu.king.utils.ServerUtil;
 import com.myftiu.king.utils.SessionUtil;
 
+import java.net.HttpURLConnection;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
@@ -36,7 +37,7 @@ public enum SessionService {
 
 
         if (user < 0) {
-			throw new GamePuzzleException("Invalid userId", ServerUtil.HTTP_STATUS_UNAUTHORIZED);
+			throw new GamePuzzleException("Invalid userId", HttpURLConnection.HTTP_UNAUTHORIZED);
 		}
 
         Calendar cal = Calendar.getInstance();
@@ -59,7 +60,7 @@ public enum SessionService {
     public int validateSessionKey(String sessionKey) throws GamePuzzleException
 	{
         if (sessionKey == null || sessionKey == "") {
-			throw new GamePuzzleException("Unauthorized user", ServerUtil.HTTP_STATUS_UNAUTHORIZED);
+			throw new GamePuzzleException("Unauthorized user", HttpURLConnection.HTTP_UNAUTHORIZED);
 		}
 
         Calendar cal = Calendar.getInstance();
@@ -68,9 +69,9 @@ public enum SessionService {
         long currentTime = cal.getTimeInMillis();
 
         if (session == null) {
-			throw new GamePuzzleException("Unauthorized user", ServerUtil.HTTP_STATUS_UNAUTHORIZED);
+			throw new GamePuzzleException("Unauthorized user", HttpURLConnection.HTTP_UNAUTHORIZED);
         } else if (currentTime - session.getStoredTime() > MAX_SESSION_TIME) {
-			throw new GamePuzzleException("Session has expired", ServerUtil.HTTP_STATUS_FORBIDDEN);
+			throw new GamePuzzleException("Session has expired", HttpURLConnection.HTTP_FORBIDDEN);
         }
 
         if (currentTime - lastCleanup > MAX_SESSION_TIME)

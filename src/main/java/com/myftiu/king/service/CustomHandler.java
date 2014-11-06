@@ -8,6 +8,7 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +20,7 @@ public class CustomHandler  implements HttpHandler {
 
 
 	private String response = null;
-	private int responseCode = ServerUtil.HTTP_STATUS_OK;
+	private int responseCode = HttpURLConnection.HTTP_OK;
 	private Map<String, Object> params;
 
 
@@ -52,13 +53,13 @@ public class CustomHandler  implements HttpHandler {
 				}
             }
             catch (NumberFormatException ex) {
-				exceptionHandledResponse(ex.getMessage(), ServerUtil.HTTP_STATUS_BAD_REQUEST);
+				exceptionHandledResponse(ex.getMessage(), HttpURLConnection.HTTP_BAD_REQUEST);
             }
 			catch (GamePuzzleException ex) {
 				exceptionHandledResponse(ex.getMessage(), ex.getStatusCode());
 			}
             catch (Exception ex) {
-				exceptionHandledResponse(ex.getMessage(), ServerUtil.HTTP_STATUS_BAD_REQUEST);
+				exceptionHandledResponse(ex.getMessage(), HttpURLConnection.HTTP_BAD_REQUEST);
             } finally {
 
 				exchange.sendResponseHeaders(responseCode, response.length());
@@ -79,7 +80,7 @@ public class CustomHandler  implements HttpHandler {
 
 		LOGGER.log(Level.INFO, "new user was created, user id is: " + params.get("userid") + " ");
 		response = SessionService.SERVICE.createSession(Integer.parseInt((String) params.get("userid")));
-        responseCode = ServerUtil.HTTP_STATUS_OK;
+        responseCode = HttpURLConnection.HTTP_OK;
 
 	}
 
@@ -99,7 +100,7 @@ public class CustomHandler  implements HttpHandler {
 
 		int userId = SessionService.SERVICE.validateSessionKey(sessionKey);
 		ScoreService.SCORE.insertScore(userId, levelId,scoreNr);
-        responseCode = ServerUtil.HTTP_STATUS_CREATED;
+        responseCode = HttpURLConnection.HTTP_CREATED;
 
 	}
 
