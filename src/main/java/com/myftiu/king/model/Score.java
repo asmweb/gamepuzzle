@@ -9,7 +9,7 @@ public class Score implements Comparable<Score> {
     private int userId;
 
 
-    public Score(int points, int userId) {
+    public Score(int userId, int points) {
         this.points = points;
         this.userId = userId;
     }

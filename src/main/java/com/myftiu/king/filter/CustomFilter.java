@@ -1,5 +1,6 @@
 package com.myftiu.king.filter;
 
+import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.utils.ServerUtil;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;
@@ -32,8 +33,18 @@ public class CustomFilter extends Filter {
      * @throws IOException
      */
         public void doFilter(HttpExchange exchange, Chain chain) throws IOException {
-            parseGetParameters(exchange);
-            parsePostParameters(exchange);
+
+			switch (exchange.getRequestMethod().toLowerCase()) {
+				case "post":
+					parsePostParameters(exchange);
+					break;
+				case "get":
+					parseGetParameters(exchange);
+					break;
+				default:
+					throw new IOException("Method " + exchange.getRequestMethod() + "is not supported ");
+			}
+
             parseUrlEncodedParameters(exchange);
             chain.doFilter(exchange);
         }
@@ -49,8 +60,11 @@ public class CustomFilter extends Filter {
             Map<String, Object> parameters = new HashMap<String, Object>();
             URI requestedUri = exchange.getRequestURI();
             String query = requestedUri.getRawQuery();
-            utils.parseRequest(query, parameters);
-            exchange.setAttribute("parameters", parameters);
+			if(query != null) {
+				utils.parseRequest(query, parameters);
+			}
+			exchange.setAttribute("parameters", parameters);
+
         }
 
 
@@ -62,15 +76,13 @@ public class CustomFilter extends Filter {
      */
         private void parsePostParameters(HttpExchange exchange) throws IOException {
 
-            if ("post".equalsIgnoreCase(exchange.getRequestMethod())) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");
+        	@SuppressWarnings("unchecked")
+			Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");
+			if(parameters == null) throw new IOException("User was not found");
+			Scanner scanner = new Scanner(exchange.getRequestBody());
+			String query = "points="+scanner.nextLine();
+			utils.parseRequest(query, parameters);
 
-    			Scanner scanner = new Scanner(exchange.getRequestBody());
-                String query = scanner.nextLine();
-                utils.parseRequest(query, parameters);
-                exchange.setAttribute("parameters", parameters);
-            }
         }
 
 
@@ -80,7 +92,8 @@ public class CustomFilter extends Filter {
      * @param exchange
      * @throws UnsupportedEncodingException
      */
-        private void parseUrlEncodedParameters(HttpExchange exchange) throws UnsupportedEncodingException {
+        private void parseUrlEncodedParameters(HttpExchange exchange) throws IOException
+		{
 
             @SuppressWarnings("unchecked")
             Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");
@@ -89,19 +102,26 @@ public class CustomFilter extends Filter {
             String[] tokens = uri.split("[/?=]");
 
             if(tokens.length > 2) {
-                if(tokens[2].equals("score") || tokens[2].equals("highscorelist")) {
-                    parameters.put("levelid", tokens[1]);
-                    parameters.put("request",tokens[2]);
-                } else if(tokens[2].equals("login")) {
-                    parameters.put("userid", tokens[1]);
-                    parameters.put("request",tokens[2]);
-                }
-                else {
-                    parameters.put("request","request is not part of the api");
-                }
-            }
-            else {
-                parameters.put("request","request is not part of the api");
+				switch (tokens[2].toLowerCase()) {
+					case "score":
+						parameters.put("levelid", tokens[1]);
+						parameters.put("request",tokens[2]);
+						parameters.put("sessionkey", tokens[4]);
+						break;
+					case "highscorelist":
+						parameters.put("levelid", tokens[1]);
+						parameters.put("request",tokens[2]);
+						break;
+					case "login":
+						parameters.put("userid", tokens[1]);
+						parameters.put("request",tokens[2]);
+						break;
+					default:
+						throw new IOException("Request is not part of the api");
+
+				}
+            } else {
+				throw new IOException("Request is not part of the api");
             }
         }
 

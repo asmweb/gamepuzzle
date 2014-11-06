@@ -22,8 +22,8 @@ public class ServerUtil {
             if (request != null) {
                 String pairs[] = request.split("[&]");
 
-                for (String pair : pairs) {
-                    String param[] = pair.split("[=]");
+                for (int i = 0; i < pairs.length; i++) {
+                    String param[] = pairs[i].split("[=]");
 
                     String key = null;
                     String value = null;

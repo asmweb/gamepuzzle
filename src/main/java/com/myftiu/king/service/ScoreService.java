@@ -109,7 +109,7 @@ public enum ScoreService {
                 }
             }
         }
-
+		
         String bestResult = retrieveBestScores(scoreResults);
 
         return bestResult;
@@ -129,9 +129,9 @@ public enum ScoreService {
 
         for(Score score: scores) {
             if (resScores == null)
-                resScores = user + "=" + score.getUserId() + "\r\n";
+                resScores = score.getUserId() + "=" + score.getPoints() + "\r\n";
             else
-                resScores += user + "=" + score.getUserId() + "\r\n";
+                resScores += score.getUserId() + "=" + score.getPoints() + "\r\n";
 
         }
 

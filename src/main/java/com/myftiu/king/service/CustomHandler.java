@@ -89,8 +89,13 @@ public class CustomHandler  implements HttpHandler {
 	{
 		LOGGER.log(Level.INFO, "the new score: " + params.get("score") + " ");
 
-		int userId = SessionService.SERVICE.validateSessionKey((String)params.get("sessionkey"));
-		ScoreService.SCORE.insertScore(userId, Integer.parseInt((String)params.get("levelid")),Integer.parseInt((String)params.get("score")));
+		String sessionKey = (String)params.get("sessionkey");
+		int levelId = Integer.parseInt((String)params.get("levelid"));
+		int scoreNr = Integer.parseInt((String)params.get("points"));
+
+
+		int userId = SessionService.SERVICE.validateSessionKey(sessionKey);
+		ScoreService.SCORE.insertScore(userId, levelId,scoreNr);
 
 	}
 
