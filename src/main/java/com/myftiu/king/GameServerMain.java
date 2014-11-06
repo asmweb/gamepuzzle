@@ -8,6 +8,8 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by myftiu on 04/11/14.
@@ -15,12 +17,14 @@ import java.util.concurrent.Executors;
 public class GameServerMain {
 
 
-    private static int port = 8009;
+    private final static int SERVER_PORT = 8009;
+	private final static Logger LOGGER = Logger.getLogger(GameServerMain.class.getName());
 
-    public static void main(String[] args) throws IOException {
+
+	public static void main(String[] args) throws IOException {
 
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(SERVER_PORT), 0);
 
 
         HttpContext context = server.createContext("/", new CustomHandler());
@@ -34,7 +38,8 @@ public class GameServerMain {
 
         server.start();
 
-        System.out.println("The server is started!");
+		LOGGER.log(Level.INFO, "Server started!");
+
     }
 
 
