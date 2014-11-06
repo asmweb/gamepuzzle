@@ -1,6 +1,7 @@
 package com.myftiu.king.service;
 
 import com.myftiu.king.exception.GamePuzzleException;
+import com.myftiu.king.utils.ServerUtil;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -18,8 +19,9 @@ public class CustomHandler  implements HttpHandler {
 
 
 	private String response = null;
-	private int responseCode = 200;
+	private int responseCode = ServerUtil.HTTP_STATUS_OK;
 	private Map<String, Object> params;
+
 
 	private final static Logger LOGGER = Logger.getLogger(CustomHandler.class.getName());
 
@@ -50,13 +52,13 @@ public class CustomHandler  implements HttpHandler {
 				}
             }
             catch (NumberFormatException ex) {
-				exceptionHandledResponse(ex.getMessage(), 400);
+				exceptionHandledResponse(ex.getMessage(), ServerUtil.HTTP_STATUS_BAD_REQUEST);
             }
 			catch (GamePuzzleException ex) {
 				exceptionHandledResponse(ex.getMessage(), ex.getStatusCode());
 			}
             catch (Exception ex) {
-				exceptionHandledResponse(ex.getMessage(), 501);
+				exceptionHandledResponse(ex.getMessage(), ServerUtil.HTTP_STATUS_BAD_REQUEST);
             } finally {
 
 				exchange.sendResponseHeaders(responseCode, response.length());
@@ -77,6 +79,7 @@ public class CustomHandler  implements HttpHandler {
 
 		LOGGER.log(Level.INFO, "new user was created, user id is: " + params.get("userid") + " ");
 		response = SessionService.SERVICE.createSession(Integer.parseInt((String) params.get("userid")));
+        responseCode = ServerUtil.HTTP_STATUS_OK;
 
 	}
 
@@ -96,6 +99,7 @@ public class CustomHandler  implements HttpHandler {
 
 		int userId = SessionService.SERVICE.validateSessionKey(sessionKey);
 		ScoreService.SCORE.insertScore(userId, levelId,scoreNr);
+        responseCode = ServerUtil.HTTP_STATUS_CREATED;
 
 	}
 

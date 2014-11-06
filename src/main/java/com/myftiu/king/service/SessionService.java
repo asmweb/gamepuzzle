@@ -2,6 +2,7 @@ package com.myftiu.king.service;
 
 import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.model.Session;
+import com.myftiu.king.utils.ServerUtil;
 import com.myftiu.king.utils.SessionUtil;
 
 import java.util.Calendar;
@@ -35,7 +36,7 @@ public enum SessionService {
 
 
         if (user < 0) {
-			throw new GamePuzzleException("Invalid userId", 401);
+			throw new GamePuzzleException("Invalid userId", ServerUtil.HTTP_STATUS_UNAUTHORIZED);
 		}
 
         Calendar cal = Calendar.getInstance();
@@ -58,7 +59,7 @@ public enum SessionService {
     public int validateSessionKey(String sessionKey) throws GamePuzzleException
 	{
         if (sessionKey == null || sessionKey == "") {
-			throw new GamePuzzleException("Unauthorized user", 401);
+			throw new GamePuzzleException("Unauthorized user", ServerUtil.HTTP_STATUS_UNAUTHORIZED);
 		}
 
         Calendar cal = Calendar.getInstance();
@@ -67,9 +68,9 @@ public enum SessionService {
         long currentTime = cal.getTimeInMillis();
 
         if (session == null) {
-			throw new GamePuzzleException("Unauthorized user", 401);
+			throw new GamePuzzleException("Unauthorized user", ServerUtil.HTTP_STATUS_UNAUTHORIZED);
         } else if (currentTime - session.getStoredTime() > MAX_SESSION_TIME) {
-			throw new GamePuzzleException("Session has expired", 401);
+			throw new GamePuzzleException("Session has expired", ServerUtil.HTTP_STATUS_FORBIDDEN);
         }
 
         if (currentTime - lastCleanup > MAX_SESSION_TIME)

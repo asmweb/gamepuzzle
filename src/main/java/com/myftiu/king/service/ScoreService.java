@@ -2,6 +2,7 @@ package com.myftiu.king.service;
 
 import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.model.Score;
+import com.myftiu.king.utils.ServerUtil;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +35,7 @@ public enum ScoreService {
 
         if (user < 0 || level < 0 || score < 0) {
             LOGGER.log(Level.INFO, "Wrong parameters in insertScore");
-            throw new GamePuzzleException("Wrong parameters in insertScore", 500);
+            throw new GamePuzzleException("Wrong parameters in insertScore", ServerUtil.HTTP_STATUS_BAD_REQUEST);
         }
 
         synchronized(users) {
