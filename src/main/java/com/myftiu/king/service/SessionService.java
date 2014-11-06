@@ -17,27 +17,18 @@ public enum SessionService {
     SERVICE;
 
 
-    private volatile Map<String,Session> usedSessionKeys = new ConcurrentHashMap<String,Session>();
+    private volatile Map<String,Session> usedSessionKeys = new ConcurrentHashMap<>();
     private long lastCleanup = Calendar.getInstance().getTimeInMillis();
-
-
-    private final long cleanupEverySecs = 1000 * 60 * 15; // 15 minutes;
-    private final long MAX_SESSION_TIME = 1000 * 60 * 10; // 10 minutes
+	private final long MAX_SESSION_TIME = 600000;
 
 
 
-
-
-    /*
-     * Usage: return a new session key
-     *
-     * Input:
-     *    user = user id
-     *
-     * Returns:
-     *    null Error
-     *    String containing a new session key in base 32
-     */
+	/**
+	 * Method creates a new session key for the given userId
+	 * @param user
+	 * @return session key for the user
+	 * @throws GamePuzzleException
+	 */
     public String createSession(int user) throws GamePuzzleException
 	{
         SessionUtil sessionUtils = new SessionUtil();
@@ -81,26 +72,24 @@ public enum SessionService {
 			throw new GamePuzzleException("Session has expired", 401);
         }
 
-        if (currentTime - lastCleanup > cleanupEverySecs)
+        if (currentTime - lastCleanup > MAX_SESSION_TIME)
             doCleanup();
 
         return session.getUser();
     }
 
-    /*
-     * Usage: clean the list from unused session key
-     */
+
+	/**
+	 * removes from session all the expired session keys
+	 */
     private void doCleanup() {
         Calendar cal = Calendar.getInstance();
         lastCleanup = cal.getTimeInMillis();
-        Iterator<String> iter = usedSessionKeys.keySet().iterator();
-        String key = "";
 
-        while(iter.hasNext()) { // For each seassion...
-            key = iter.next();
-            if (lastCleanup - usedSessionKeys.get(key).getStoredTime() > MAX_SESSION_TIME) {
-                usedSessionKeys.remove(key);
-            }
-        }
+		for(Map.Entry<String,Session> entry: usedSessionKeys.entrySet()) {
+			if (lastCleanup - entry.getValue().getStoredTime() > MAX_SESSION_TIME) {
+				usedSessionKeys.remove(entry.getKey());
+			}
+		}
     }
 }

@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 
 /**
@@ -43,8 +44,7 @@ public class CustomFilter extends Filter {
      * @param exchange
      * @throws UnsupportedEncodingException
      */
-        private void parseGetParameters(HttpExchange exchange)
-                throws UnsupportedEncodingException {
+        private void parseGetParameters(HttpExchange exchange) throws UnsupportedEncodingException {
 
             Map<String, Object> parameters = new HashMap<String, Object>();
             URI requestedUri = exchange.getRequestURI();
@@ -60,19 +60,14 @@ public class CustomFilter extends Filter {
      * @param exchange
      * @throws IOException
      */
-        private void parsePostParameters(HttpExchange exchange)
-                throws IOException {
+        private void parsePostParameters(HttpExchange exchange) throws IOException {
 
             if ("post".equalsIgnoreCase(exchange.getRequestMethod())) {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");
 
-                InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(),"utf-8");
-                BufferedReader br = new BufferedReader(isr);
-                String query = br.readLine();
-
-                //Scanner scanner = new Scanner(exchange.getRequestBody());
-                //String query = scanner.nextLine();
+    			Scanner scanner = new Scanner(exchange.getRequestBody());
+                String query = scanner.nextLine();
                 utils.parseRequest(query, parameters);
                 exchange.setAttribute("parameters", parameters);
             }
@@ -85,8 +80,7 @@ public class CustomFilter extends Filter {
      * @param exchange
      * @throws UnsupportedEncodingException
      */
-        private void parseUrlEncodedParameters(HttpExchange exchange)
-                throws UnsupportedEncodingException {
+        private void parseUrlEncodedParameters(HttpExchange exchange) throws UnsupportedEncodingException {
 
             @SuppressWarnings("unchecked")
             Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");

@@ -16,8 +16,7 @@ public enum ScoreService {
 
         SCORE;
 
-        volatile private Map<Integer,Map<Integer,List<Integer>>> users = new ConcurrentHashMap<Integer,Map<Integer,List<Integer>>>();
-        final int numHighestScores = 15;
+        private volatile Map<Integer,Map<Integer,List<Integer>>> users = new ConcurrentHashMap<>();
 		private final static Logger LOGGER = Logger.getLogger(ScoreService.class.getName());
 
 
@@ -93,10 +92,9 @@ public enum ScoreService {
         Integer userMaxScore = 0;
 
         synchronized(users) {
-            // this block is synchronized because of the iterator
+
 
             userIter = users.keySet().iterator();
-
             while(userIter.hasNext()) { // Search the highest score for each user
 
                 user = userIter.next().intValue();
@@ -117,23 +115,16 @@ public enum ScoreService {
         return bestResult;
     }
 
-    /*
-     * Usage: Order a list with the best scores and prepare a CSV string
-     *
-     * Input:
-     *    scores = list of the best scores (not ordered)
-     *
-     * Returns:
-     *    null No scores
-     *    String containing the best scores (in inverse order)
-     *        (format: user=score\r\nuser=score...)
-     */
 
 
+	/**
+	 *
+	 * @param scores
+	 * @return
+	 */
     private String retrieveBestScores(List<Score> scores) {
 
         int user = 0;
-        int contRes = 0;
         String resScores = null;
 
         for(Score score: scores) {
@@ -142,7 +133,6 @@ public enum ScoreService {
             else
                 resScores += user + "=" + score.getUserId() + "\r\n";
 
-            if (++contRes >= numHighestScores) break;
         }
 
         return resScores;

@@ -75,7 +75,7 @@ public class CustomHandler  implements HttpHandler {
 	private void loginRequest() throws GamePuzzleException
 	{
 
-		LOGGER.log(Level.INFO, "new user was created, user id is: " + (String)params.get("userid") + " ");
+		LOGGER.log(Level.INFO, "new user was created, user id is: " + params.get("userid") + " ");
 		response = SessionService.SERVICE.createSession(Integer.parseInt((String) params.get("userid")));
 
 	}
