@@ -1,8 +1,5 @@
 package com.myftiu.king.model;
 
-import java.util.Comparator;
-import java.util.Map;
-
 /**
  * Created by myftiu on 04/11/14.
  */

@@ -2,7 +2,7 @@ package com.myftiu.king.service;
 
 import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.model.Session;
-import com.myftiu.king.utils.*;
+import com.myftiu.king.utils.SessionUtil;
 
 import java.util.Calendar;
 import java.util.Iterator;
@@ -56,39 +56,34 @@ public enum SessionService {
         return sessionKey;
     }
 
-    /*
-     * Usage: validate a session key and check if a session is still valid
-     *
-     * Input:
-     *    sessionKey = base 32 session key string
-     *
-     * Returns:
-     *    -1 Error
-     *    user id associated to the session
-     */
-    public int validateSessionKey(String sessionKey)
-    {
-        if (sessionKey == null || sessionKey == "")
-            return -1;
+
+
+	/**
+	 * Given the session key returns userId
+	 * @param sessionKey
+	 * @return userId
+	 * @throws GamePuzzleException
+	 */
+    public int validateSessionKey(String sessionKey) throws GamePuzzleException
+	{
+        if (sessionKey == null || sessionKey == "") {
+			throw new GamePuzzleException("Unauthorized user", 401);
+		}
 
         Calendar cal = Calendar.getInstance();
-        boolean val = usedSessionKeys.containsKey(sessionKey);
         Session session = usedSessionKeys.get(sessionKey);
 
         long currentTime = cal.getTimeInMillis();
 
         if (session == null) {
-            // SessionKey not valid
-            return -1;
+			throw new GamePuzzleException("Unauthorized user", 401);
         } else if (currentTime - session.getStoredTime() > MAX_SESSION_TIME) {
-            // Session elapsed
-            return -1;
+			throw new GamePuzzleException("Session has expired", 401);
         }
 
         if (currentTime - lastCleanup > cleanupEverySecs)
             doCleanup();
 
-        // Valid session
         return session.getUser();
     }
 
