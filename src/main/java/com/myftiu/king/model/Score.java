@@ -33,7 +33,7 @@ public class Score implements Comparable<Score> {
 
     @Override
     public int compareTo(Score o) {
-        return Integer.compare(this.points, o.getPoints());
+        return Integer.compare(o.getPoints(), this.points);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class Score implements Comparable<Score> {
 	@Override
 	public String toString()
 	{
-		return userId + "=" + points + "\r\n";
+		return userId + "=" + points + "\n";
 
 	}
 }

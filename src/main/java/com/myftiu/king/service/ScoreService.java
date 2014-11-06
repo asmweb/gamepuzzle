@@ -110,31 +110,9 @@ public enum ScoreService {
             }
         }
 
-
+		Collections.sort(scoreResults);
         return scoreResults.toString().replaceAll("\\[|\\]|,", "");
     }
 
-
-
-	/**
-	 *
-	 * @param scores
-	 * @return
-	 */
-    private String retrieveBestScores(List<Score> scores) {
-
-
-        String resScores = null;
-
-        for(Score score: scores) {
-            if (resScores == null)
-                resScores = score.getUserId() + "=" + score.getPoints() + "\r\n";
-            else
-                resScores += score.getUserId() + "=" + score.getPoints() + "\r\n";
-
-        }
-
-        return resScores;
-    }
 
 }
