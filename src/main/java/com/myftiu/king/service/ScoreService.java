@@ -109,10 +109,9 @@ public enum ScoreService {
                 }
             }
         }
-		
-        String bestResult = retrieveBestScores(scoreResults);
 
-        return bestResult;
+
+        return scoreResults.toString().replaceAll("\\[|\\]|,", "");
     }
 
 
@@ -124,7 +123,7 @@ public enum ScoreService {
 	 */
     private String retrieveBestScores(List<Score> scores) {
 
-        int user = 0;
+
         String resScores = null;
 
         for(Score score: scores) {

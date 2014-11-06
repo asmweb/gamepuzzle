@@ -59,9 +59,7 @@ public class Score implements Comparable<Score> {
 	@Override
 	public String toString()
 	{
-		return "Score{" +
-				"points=" + points +
-				", userId=" + userId +
-				'}';
+		return userId + "=" + points + "\r\n";
+
 	}
 }
