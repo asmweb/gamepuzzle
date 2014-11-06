@@ -65,6 +65,7 @@ public class CustomFilter extends Filter {
 			}
 			exchange.setAttribute("parameters", parameters);
 
+
         }
 
 
@@ -78,7 +79,11 @@ public class CustomFilter extends Filter {
 
         	@SuppressWarnings("unchecked")
 			Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");
-			if(parameters == null) throw new IOException("User was not found");
+			if(parameters == null){
+                exchange.sendResponseHeaders(ServerUtil.HTTP_STATUS_BAD_REQUEST, 0);
+                throw new IOException("User was not found");
+
+            }
 			Scanner scanner = new Scanner(exchange.getRequestBody());
 			String query = "points="+scanner.nextLine();
 			utils.parseRequest(query, parameters);

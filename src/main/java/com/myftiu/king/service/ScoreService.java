@@ -112,7 +112,8 @@ public enum ScoreService {
         }
 
 		Collections.sort(scoreResults);
-        return scoreResults.toString().replaceAll("\\[|\\]|,", "");
+        /* trims the string from the unnecessary chars of the method toString */
+        return scoreResults.toString().replaceAll("\\[|\\]|,| ", "").trim();
     }
 
 

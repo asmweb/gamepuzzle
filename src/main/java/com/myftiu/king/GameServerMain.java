@@ -19,12 +19,18 @@ public class GameServerMain {
 
     private final static int SERVER_PORT = 8009;
 	private final static Logger LOGGER = Logger.getLogger(GameServerMain.class.getName());
+    private  HttpServer server;
 
 
 	public static void main(String[] args) throws IOException {
+        GameServerMain gameServerMain = new GameServerMain();
+        gameServerMain.startServer();
+    }
 
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(SERVER_PORT), 0);
+    public void startServer() throws IOException {
+
+        server = HttpServer.create(new InetSocketAddress(SERVER_PORT), 0);
 
 
         HttpContext context = server.createContext("/", new CustomHandler());
@@ -38,8 +44,12 @@ public class GameServerMain {
 
         server.start();
 
-		LOGGER.log(Level.INFO, "Server started!");
+        LOGGER.log(Level.INFO, "Server started!");
+    }
 
+
+    public void stopServer() {
+        if(server != null) server.stop(0);
     }
 
 
