@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.myftiu.king.exception.GamePuzzleException;
 import com.sun.net.httpserver.*;
 
 /**
@@ -20,7 +21,7 @@ public class CustomHandler  implements HttpHandler {
 
 	private final static Logger LOGGER = Logger.getLogger(CustomHandler.class.getName());
 
-	/**
+		/**
          * A custom handler for client requests
          * @param exchange can be the request or the response object
          * @throws IOException
@@ -42,14 +43,17 @@ public class CustomHandler  implements HttpHandler {
 					highscorelistRequest(headers);
                 }
                 else {
-                   unHandledRequest();
+                   throw new GamePuzzleException("The request can not be handle", 501);
                 }
             }
-            catch (NumberFormatException exception) {
-				exceptionHandledResponse(exception.getMessage());
+            catch (NumberFormatException ex) {
+				exceptionHandledResponse(ex.getMessage(), 400);
             }
-            catch (Exception exception) {
-				exceptionHandledResponse(exception.getMessage());
+			catch (GamePuzzleException ex) {
+				exceptionHandledResponse(ex.getMessage(), ex.getStatusCode());
+			}
+            catch (Exception ex) {
+				exceptionHandledResponse(ex.getMessage(), 501);
             } finally {
 
                 if (response != null)
@@ -66,30 +70,30 @@ public class CustomHandler  implements HttpHandler {
         }
 
 
-	private void loginRequest() {
+	private void loginRequest() throws GamePuzzleException
+	{
 
 		LOGGER.log(Level.INFO, "new user was created, user id is: " + (String)params.get("userid") + " ");
 
 		response = SessionService.SERVICE.createSession(Integer.parseInt((String) params.get("userid")));
 
-		if(response == null) responseCode = 500; // Server error
+		if(response == null) {
+			throw new GamePuzzleException("Session was not created", 500);
+		}
 	}
 
-	private void scoreRequest() {
+	private void scoreRequest() throws GamePuzzleException
+	{
 		LOGGER.log(Level.INFO, "the new score: " + (String)params.get("score") + " ");
-
 
 		int userId = SessionService.SERVICE.validateSessionKey((String)params.get("sessionkey"));
 
 		if (userId  == -1)    {
-			responseCode = 401;
-			response = "unauthorized user";
+			throw new GamePuzzleException("Unauthorized user", 401);
 		}
 
 		else {
-			int result = ScoreService.SCORE.insertScore(userId, Integer.parseInt((String)params.get("levelid")),Integer.parseInt((String)params.get("score")));
-			if(result == -1)
-				responseCode = 500; // Server error
+			ScoreService.SCORE.insertScore(userId, Integer.parseInt((String)params.get("levelid")),Integer.parseInt((String)params.get("score")));
 		}
 
 	}
@@ -116,8 +120,8 @@ public class CustomHandler  implements HttpHandler {
 		responseCode = 400; // Request type not implemented
 	}
 
-	private void exceptionHandledResponse(String message) {
-		responseCode = 400;
+	private void exceptionHandledResponse(String message, int statusCode) {
+		responseCode = statusCode;
 		response = message;
 		System.out.println(message);
 	}

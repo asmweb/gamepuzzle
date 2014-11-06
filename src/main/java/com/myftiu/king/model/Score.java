@@ -58,4 +58,13 @@ public class Score implements Comparable<Score> {
         result = 31 * result + userId;
         return result;
     }
+
+	@Override
+	public String toString()
+	{
+		return "Score{" +
+				"points=" + points +
+				", userId=" + userId +
+				'}';
+	}
 }

@@ -1,5 +1,6 @@
 package com.myftiu.king.service;
 
+import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.model.Session;
 import com.myftiu.king.utils.*;
 
@@ -37,12 +38,14 @@ public enum SessionService {
      *    null Error
      *    String containing a new session key in base 32
      */
-    public String createSession(int user)
-    {
+    public String createSession(int user) throws GamePuzzleException
+	{
         SessionUtil sessionUtils = new SessionUtil();
 
 
-        if (user < 0) return null;
+        if (user < 0) {
+			throw new GamePuzzleException("Invalid userId", 401);
+		}
 
         Calendar cal = Calendar.getInstance();
         Session session = new Session(cal.getTimeInMillis(), user);
