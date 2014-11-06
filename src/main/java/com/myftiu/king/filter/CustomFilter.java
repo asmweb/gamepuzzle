@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,7 +81,7 @@ public class CustomFilter extends Filter {
         	@SuppressWarnings("unchecked")
 			Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");
 			if(parameters == null){
-                exchange.sendResponseHeaders(ServerUtil.HTTP_STATUS_BAD_REQUEST, 0);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                 throw new IOException("User was not found");
 
             }
