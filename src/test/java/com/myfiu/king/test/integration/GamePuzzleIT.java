@@ -21,23 +21,9 @@ import static org.junit.Assert.assertNotNull;
  */
 
 @RunWith(JUnit4.class)
-public class GamePuzzleIT {
+public class GamePuzzleIT extends GenericTestCase {
 
-    private  GameServerMain gameServerMain;
-    private HttpURLConnection httpConnection;
-
-
-    @Before
-    public  void startServer() throws IOException {
-        gameServerMain = new GameServerMain();
-        gameServerMain.startServer();
-
-    }
-
-    @After
-    public  void stopServer() throws IOException {
-        gameServerMain.stopServer();
-    }
+	private HttpURLConnection httpConnection;
 
 
     @Test
