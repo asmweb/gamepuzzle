@@ -1,4 +1,4 @@
-package com.myftiu.king.test.unit;
+package com.myfiu.king.unit;
 
 import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.service.ScoreService;
