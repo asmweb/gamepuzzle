@@ -70,4 +70,24 @@ public class GamePuzzleTest extends GenericTestCase
 
 	}
 
+    @Test
+    public void shouldNotCreateNewSessionForActiveUser() throws IOException {
+
+        //given
+        String createUserUrl = "http://localhost:8009/411/login";
+        httpConnection = createConnection(createUserUrl, "GET");
+        String sessionKey = getResponseBody(httpConnection.getInputStream());
+        httpConnection.disconnect();
+
+        //when
+        String recallActiveUserLogin = "http://localhost:8009/411/login";
+        httpConnection = createConnection(recallActiveUserLogin, "GET");
+        String activeSessionKey = getResponseBody(httpConnection.getInputStream());
+        httpConnection.disconnect();
+
+        //then
+        assertEquals(sessionKey, activeSessionKey);
+
+    }
+
 }

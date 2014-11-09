@@ -2,6 +2,7 @@ package com.myftiu.king.service;
 
 import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.utils.ServerUtil;
+import com.myftiu.king.utils.Validation;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -103,9 +104,8 @@ public class CustomHandler  implements HttpHandler {
 		String sessionKey = (String)params.get("sessionkey");
 		int levelId = Integer.parseInt((String)params.get("levelid"));
 		int scoreNr = Integer.parseInt((String)params.get("points"));
-
-
 		int userId = sessionService.validateSessionKey(sessionKey);
+        Validation.validateUser(userId);
         scoreService.insertScore(userId, levelId,scoreNr);
         responseCode = HttpURLConnection.HTTP_CREATED;
         response = "";
