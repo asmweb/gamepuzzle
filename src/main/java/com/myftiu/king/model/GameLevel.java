@@ -3,9 +3,13 @@ package com.myftiu.king.model;
 /**
  * @author by ali myftiu.
  */
-public class Level {
+public class GameLevel {
 
     int levelId;
+
+    public GameLevel(int levelId) {
+        this.levelId = levelId;
+    }
 
     public int getLevelId() {
         return levelId;
@@ -20,7 +24,7 @@ public class Level {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Level level = (Level) o;
+        GameLevel level = (GameLevel) o;
 
         if (levelId != level.levelId) return false;
 

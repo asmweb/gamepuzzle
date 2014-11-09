@@ -3,9 +3,13 @@ package com.myftiu.king.model;
 /**
  * @author by ali myftiu.
  */
-public class User {
+public class GameUser {
 
     int userId;
+
+    public GameUser(int userId) {
+        this.userId = userId;
+    }
 
     public int getUserId() {
         return userId;
@@ -20,7 +24,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        GameUser user = (GameUser) o;
 
         if (userId != user.userId) return false;
 

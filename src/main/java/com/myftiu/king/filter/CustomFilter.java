@@ -82,7 +82,7 @@ public class CustomFilter extends Filter {
 			Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");
 			if(parameters == null){
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                throw new IOException("User was not found");
+                throw new IOException("GameUser was not found");
 
             }
 			Scanner scanner = new Scanner(exchange.getRequestBody());

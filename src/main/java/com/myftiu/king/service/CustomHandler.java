@@ -22,9 +22,16 @@ public class CustomHandler  implements HttpHandler {
 	private String response = "response";
 	private int responseCode = HttpURLConnection.HTTP_OK;
 	private Map<String, Object> params;
+    private SessionService sessionService;
+    private ScoreService scoreService;
 
 
 	private final static Logger LOGGER = Logger.getLogger(CustomHandler.class.getName());
+
+    public CustomHandler() {
+       this.sessionService = new SessionService();
+       this.scoreService = new ScoreService();
+    }
 
 		/**
          * A custom handler for client requests
@@ -79,7 +86,7 @@ public class CustomHandler  implements HttpHandler {
 	{
 
 		LOGGER.log(Level.INFO, "new user was created, user id is: " + params.get("userid") + " ");
-		response = SessionService.SERVICE.createSession(Integer.parseInt((String) params.get("userid")));
+		response = sessionService.createSession(Integer.parseInt((String) params.get("userid")));
         responseCode = HttpURLConnection.HTTP_OK;
 
 	}
@@ -98,9 +105,10 @@ public class CustomHandler  implements HttpHandler {
 		int scoreNr = Integer.parseInt((String)params.get("points"));
 
 
-		int userId = SessionService.SERVICE.validateSessionKey(sessionKey);
-		ScoreService.SCORE.insertScore(userId, levelId,scoreNr);
+		int userId = sessionService.validateSessionKey(sessionKey);
+        scoreService.insertScore(userId, levelId,scoreNr);
         responseCode = HttpURLConnection.HTTP_CREATED;
+        response = "";
 
 	}
 
@@ -113,7 +121,7 @@ public class CustomHandler  implements HttpHandler {
 	private void highscorelistRequest(Headers headers) throws GamePuzzleException {
 
 		LOGGER.log(Level.INFO, "generating csv file for highestScoreList for levelId : " + params.get("levelid") + " ");
-		response = ScoreService.SCORE.getHighestScores(Integer.parseInt((String)params.get("levelid")));
+		response = scoreService.getHighestScores(Integer.parseInt((String)params.get("levelid")));
 		headers.add("Content-Type", "text/csv");
 		headers.add("Content-Disposition", "attachment;filename=gamepuzzle.csv");
 	}

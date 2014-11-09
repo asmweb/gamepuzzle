@@ -30,18 +30,20 @@ public class GamePuzzleTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    private ScoreService scoreService = new ScoreService();
+
     @Test
     public void shouldReturnTheHighestScore() throws GamePuzzleException {
 
         //given
-        ScoreService.SCORE.insertScore(121, 2, 1101);
-        ScoreService.SCORE.insertScore(411, 2, 5101);
-        ScoreService.SCORE.insertScore(341, 2, 3213);
-        ScoreService.SCORE.insertScore(123, 4, 9101);
+        scoreService.insertScore(121, 2, 1101);
+        scoreService.insertScore(411, 2, 5101);
+        scoreService.insertScore(341, 2, 3213);
+        scoreService.insertScore(123, 4, 9101);
 
 
         //when
-        String result = ScoreService.SCORE.getHighestScores(2);
+        String result = scoreService.getHighestScores(2);
 
         //then
         assertEquals("411=5101\n341=3213\n121=1101", result);

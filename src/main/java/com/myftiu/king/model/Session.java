@@ -6,7 +6,7 @@ package com.myftiu.king.model;
 public class Session {
 
         private long storedTime; // The time this session has been created
-        private int user; // User associated to this session
+        private int user; // GameUser associated to this session
 
         public Session(int user, long storedTime) {
 

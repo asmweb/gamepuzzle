@@ -17,6 +17,9 @@ public class ValidationTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    private SessionService sessionService = new SessionService();
+    private ScoreService scoreService = new ScoreService();
+
     @Test
     public void shouldFailCreatingNewUser() throws GamePuzzleException, IOException {
 
@@ -25,7 +28,7 @@ public class ValidationTest {
 
         // when
         expectedException.expect(GamePuzzleException.class);
-        SessionService.SERVICE.createSession(user);
+        sessionService.createSession(user);
 
         //then
 
@@ -44,7 +47,7 @@ public class ValidationTest {
         //when
          expectedException.expect(GamePuzzleException.class);
          expectedException.expectMessage("Invalid userId " + failingUser);
-         ScoreService.SCORE.insertScore(failingUser, okScore, okLevel);
+         scoreService.insertScore(failingUser, okScore, okLevel);
 
         //then
 
@@ -64,7 +67,7 @@ public class ValidationTest {
         //when
         expectedException.expect(GamePuzzleException.class);
         expectedException.expectMessage("Invalid score " + failingScore);
-        ScoreService.SCORE.insertScore(okUser, okLevel, failingScore);
+        scoreService.insertScore(okUser, okLevel, failingScore);
 
     }
 
@@ -80,7 +83,7 @@ public class ValidationTest {
         //when
         expectedException.expect(GamePuzzleException.class);
         expectedException.expectMessage("Invalid levelId " + failingLevel);
-        ScoreService.SCORE.insertScore(okUser, failingLevel, okScore);
+        scoreService.insertScore(okUser, failingLevel, okScore);
 
     }
 

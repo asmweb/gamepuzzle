@@ -3,9 +3,13 @@ package com.myftiu.king.model;
 /**
  * @author by ali myftiu.
  */
-public class Score {
+public class GameScore implements Comparable<GameScore>{
 
     int score;
+
+    public GameScore(int score) {
+        this.score = score;
+    }
 
     public int getScore() {
         return score;
@@ -20,7 +24,7 @@ public class Score {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Score score1 = (Score) o;
+        GameScore score1 = (GameScore) o;
 
         if (score != score1.score) return false;
 
@@ -30,5 +34,11 @@ public class Score {
     @Override
     public int hashCode() {
         return score;
+    }
+
+
+    @Override
+    public int compareTo(GameScore o) {
+        return Integer.compare(o.getScore(), this.getScore());
     }
 }
