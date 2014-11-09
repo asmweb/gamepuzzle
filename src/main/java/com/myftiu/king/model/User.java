@@ -3,16 +3,16 @@ package com.myftiu.king.model;
 /**
  * @author by ali myftiu.
  */
-public class Score {
+public class User {
 
-    int score;
+    int userId;
 
-    public int getScore() {
-        return score;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -20,15 +20,15 @@ public class Score {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Score score1 = (Score) o;
+        User user = (User) o;
 
-        if (score != score1.score) return false;
+        if (userId != user.userId) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return score;
+        return userId;
     }
 }

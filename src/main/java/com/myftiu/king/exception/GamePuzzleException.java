@@ -1,7 +1,7 @@
 package com.myftiu.king.exception;
 
 /**
- * @author by ali myftiu on 06/11/14.
+ * @author by ali myftiu.
  */
 public class GamePuzzleException extends Exception{
 

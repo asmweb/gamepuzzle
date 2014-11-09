@@ -1,28 +1,29 @@
 package com.myfiu.king.integration;
 
+import com.myftiu.king.service.CustomHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
- * Created by myftiu on 06/11/14.
+ * @author by ali myftiu.
  */
 
-@RunWith(JUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public class GamePuzzleTest extends GenericTestCase
 {
 
 	private HttpURLConnection httpConnection;
+    private final CustomHandler CUSTOM_HANDLER = new CustomHandler();
 
 
 	@Test
@@ -68,8 +69,5 @@ public class GamePuzzleTest extends GenericTestCase
 		assertEquals(status, HttpURLConnection.HTTP_BAD_REQUEST);
 
 	}
-
-
-
 
 }

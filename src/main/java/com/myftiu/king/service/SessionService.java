@@ -1,18 +1,18 @@
 package com.myftiu.king.service;
 
+import com.myftiu.king.ServerConfig;
 import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.model.Session;
-import com.myftiu.king.utils.ServerUtil;
 import com.myftiu.king.utils.SessionUtil;
+import com.myftiu.king.utils.Validation;
 
 import java.net.HttpURLConnection;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by myftiu on 04/11/14.
+ * @author by ali myftiu.
  */
 public enum SessionService {
 
@@ -21,7 +21,7 @@ public enum SessionService {
 
     private volatile Map<String,Session> usedSessionKeys = new ConcurrentHashMap<>();
     private long lastCleanup = Calendar.getInstance().getTimeInMillis();
-	private final long MAX_SESSION_TIME = 600000;
+
 
 
 
@@ -35,13 +35,10 @@ public enum SessionService {
 	{
         SessionUtil sessionUtils = new SessionUtil();
 
-
-        if (user < 0) {
-			throw new GamePuzzleException("Invalid userId", HttpURLConnection.HTTP_UNAUTHORIZED);
-		}
+        Validation.validateUser(user);
 
         Calendar cal = Calendar.getInstance();
-        Session session = new Session(cal.getTimeInMillis(), user);
+        Session session = new Session(user, cal.getTimeInMillis());
 
         String sessionKey = sessionUtils.createSessionKey();
         usedSessionKeys.put(sessionKey, session);
@@ -70,12 +67,12 @@ public enum SessionService {
 
         if (session == null) {
 			throw new GamePuzzleException("Unauthorized user", HttpURLConnection.HTTP_UNAUTHORIZED);
-        } else if (currentTime - session.getStoredTime() > MAX_SESSION_TIME) {
+        } else if (currentTime - session.getStoredTime() > ServerConfig.MAX_SESSION_TIME) {
 			throw new GamePuzzleException("Session has expired", HttpURLConnection.HTTP_FORBIDDEN);
         }
 
-        if (currentTime - lastCleanup > MAX_SESSION_TIME)
-            doCleanup();
+        if (currentTime - lastCleanup > ServerConfig.MAX_SESSION_TIME)
+            cleanSessions();
 
         return session.getUser();
     }
@@ -84,12 +81,12 @@ public enum SessionService {
 	/**
 	 * removes from session all the expired session keys
 	 */
-    private void doCleanup() {
+    private void cleanSessions() {
         Calendar cal = Calendar.getInstance();
         lastCleanup = cal.getTimeInMillis();
 
 		for(Map.Entry<String,Session> entry: usedSessionKeys.entrySet()) {
-			if (lastCleanup - entry.getValue().getStoredTime() > MAX_SESSION_TIME) {
+			if (lastCleanup - entry.getValue().getStoredTime() > ServerConfig.MAX_SESSION_TIME) {
 				usedSessionKeys.remove(entry.getKey());
 			}
 		}

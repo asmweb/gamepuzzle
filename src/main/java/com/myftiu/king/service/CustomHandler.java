@@ -14,12 +14,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by myftiu on 04/11/14.
+ * @author by ali myftiu.
  */
 public class CustomHandler  implements HttpHandler {
 
 
-	private String response = null;
+	private String response = "response";
 	private int responseCode = HttpURLConnection.HTTP_OK;
 	private Map<String, Object> params;
 
@@ -110,7 +110,7 @@ public class CustomHandler  implements HttpHandler {
 	 * @param headers
 	 */
 
-	private void highscorelistRequest(Headers headers) {
+	private void highscorelistRequest(Headers headers) throws GamePuzzleException {
 
 		LOGGER.log(Level.INFO, "generating csv file for highestScoreList for levelId : " + params.get("levelid") + " ");
 		response = ScoreService.SCORE.getHighestScores(Integer.parseInt((String)params.get("levelid")));

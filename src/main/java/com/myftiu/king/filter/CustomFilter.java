@@ -17,7 +17,7 @@ import java.util.Scanner;
 
 
 /**
- * Created by myftiu on 04/11/14.
+ * @author by ali myftiu.
  */
 public class CustomFilter extends Filter {
 
@@ -58,7 +58,7 @@ public class CustomFilter extends Filter {
      */
         private void parseGetParameters(HttpExchange exchange) throws UnsupportedEncodingException {
 
-            Map<String, Object> parameters = new HashMap<String, Object>();
+            Map<String, Object> parameters = new HashMap<>();
             URI requestedUri = exchange.getRequestURI();
             String query = requestedUri.getRawQuery();
 			if(query != null) {
@@ -105,22 +105,22 @@ public class CustomFilter extends Filter {
             Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");
 
             String uri = exchange.getRequestURI().toString();
-            String[] tokens = uri.split("[/?=]");
+            String[] params = uri.split("[/?=]");
 
-            if(tokens.length > 2) {
-				switch (tokens[2].toLowerCase()) {
+            if(params.length > 2) {
+				switch (params[2].toLowerCase()) {
 					case "score":
-						parameters.put("levelid", tokens[1]);
-						parameters.put("request",tokens[2]);
-						parameters.put("sessionkey", tokens[4]);
+						parameters.put("levelid", params[1]);
+						parameters.put("request",params[2]);
+						parameters.put("sessionkey", params[4]);
 						break;
 					case "highscorelist":
-						parameters.put("levelid", tokens[1]);
-						parameters.put("request",tokens[2]);
+						parameters.put("levelid", params[1]);
+						parameters.put("request",params[2]);
 						break;
 					case "login":
-						parameters.put("userid", tokens[1]);
-						parameters.put("request",tokens[2]);
+						parameters.put("userid", params[1]);
+						parameters.put("request",params[2]);
 						break;
 					default:
 						throw new IOException("Request is not part of the api");

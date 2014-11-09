@@ -3,7 +3,7 @@ package com.myftiu.king.utils;
 import java.util.UUID;
 
 /**
- * Created by myftiu on 04/11/14.
+ * @author by ali myftiu.
  */
 public class SessionUtil {
 

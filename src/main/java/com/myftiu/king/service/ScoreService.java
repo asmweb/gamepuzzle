@@ -1,8 +1,9 @@
 package com.myftiu.king.service;
 
+import com.myftiu.king.ServerConfig;
 import com.myftiu.king.exception.GamePuzzleException;
-import com.myftiu.king.model.Score;
-import com.myftiu.king.utils.ServerUtil;
+import com.myftiu.king.model.GameBoard;
+import com.myftiu.king.utils.Validation;
 
 import java.net.HttpURLConnection;
 import java.util.*;
@@ -12,7 +13,7 @@ import java.util.logging.Logger;
 
 
 /**
- * Created by myftiu on 04/11/14.
+ * @author by ali myftiu.
  */
 public enum ScoreService {
 
@@ -20,61 +21,57 @@ public enum ScoreService {
 
         private volatile Map<Integer,Map<Integer,List<Integer>>> users = new ConcurrentHashMap<>();
 		private final static Logger LOGGER = Logger.getLogger(ScoreService.class.getName());
+        private final static int MAX_RESULT_LIST = 15;
 
 
 	/**
 	 * The methods inserts the score for the user in a defined level
-	 * @param user is the userId
-	 * @param level desired level
+	 * @param userid is the userId
+	 * @param levelid desired level
 	 * @param score the new score for the that level
 	 *
 	 */
-    public void insertScore(int user, int level, int score) throws GamePuzzleException
+    public void insertScore(int userid, int levelid, int score) throws GamePuzzleException
 	{
 
-        List<Integer> addScore = null;
+        List<Integer> addScore ;
 
-        if (user < 0 || level < 0 || score < 0) {
-            LOGGER.log(Level.INFO, "Wrong parameters in insertScore");
-            throw new GamePuzzleException("Wrong parameters in insertScore", HttpURLConnection.HTTP_BAD_REQUEST);
-        }
+        Validation.validateAddingScore(userid, levelid, score);
 
         synchronized(users) {
 
 
-            if (users.containsKey(user)) {
+            if (users.containsKey(userid)) {
 
-                // Existing user
+                Map<Integer,List<Integer>> storedUserLevels = users.get(userid);
 
-                Map<Integer,List<Integer>> storedUserLevels = users.get(user);
+                LOGGER.log(Level.INFO, "user " + userid + " was found");
 
-                if (storedUserLevels.containsKey(level)) {
+                if (storedUserLevels.containsKey(levelid)) {
 
-                    // Existing level
-
-                    List<Integer> storedScores =  storedUserLevels.get(level);
+                    LOGGER.log(Level.INFO, "adding a another score " + score + " for user's " + userid + " level " + levelid);
+                    List<Integer> storedScores =  storedUserLevels.get(levelid);
 
                     storedScores.add(score);
                 }
                 else {
 
-                    // New level for existing user
+                    LOGGER.log(Level.INFO, "adding a new score " + score + " for user's " + userid + " level " + levelid);
 
                     addScore = Collections.synchronizedList(new ArrayList<Integer>());
 
                     addScore.add(score);
-                    storedUserLevels.put(level, addScore);
-                    users.put(user, storedUserLevels);
+                    storedUserLevels.put(levelid, addScore);
+                    users.put(userid, storedUserLevels);
                 }
             } else {
 
-                // New user
-
+                LOGGER.log(Level.INFO, "no user was found, creating a new entry");
                 Map<Integer,List<Integer>> addLevel = new ConcurrentHashMap<Integer,List<Integer>>();
                 addScore = Collections.synchronizedList(new ArrayList<Integer>());
                 addScore.add(score);
-                addLevel.put(level, addScore);
-                users.put(user, addLevel);
+                addLevel.put(levelid, addScore);
+                users.put(userid, addLevel);
             }
         }
 
@@ -83,33 +80,33 @@ public enum ScoreService {
 
 	/**
 	 * Gets the highest score for the desired level
-	 * @param level
+	 * @param levelId
 	 * @return highest score for that level
 	 */
-    public String getHighestScores(int level) {
+    public String getHighestScores(int levelId) throws GamePuzzleException {
 
-        Iterator<Integer> userIter = null;
-        List<Score> scoreResults = new ArrayList<Score>();
-        int user = 0;
-        Integer userMaxScore = 0;
+        Validation.validateLevelId(levelId);
+
+        List<GameBoard> scoreResults = new ArrayList<>();
+        int userMaxScore;
+        int index = 0;
+
+        LOGGER.log(Level.INFO, "gathering the first " + MAX_RESULT_LIST + " scores for level  " + levelId);
 
         synchronized(users) {
 
+            for(Map.Entry<Integer,Map<Integer,List<Integer>>> userEntry: users.entrySet()) {
+                if (users.get(userEntry.getKey()) != null &&
+                        users.get(userEntry.getKey()).get(levelId) != null &&
+                        users.get(userEntry.getKey()).get(levelId).size() > 0) {
 
-            userIter = users.keySet().iterator();
-            while(userIter.hasNext()) { // Search the highest score for each user
-
-                user = userIter.next().intValue();
-
-                if (users.get(user) != null &&
-                        users.get(user).get(level) != null &&
-                        users.get(user).get(level).size() > 0) {
-
-                    userMaxScore = Collections.max(users.get(user).get(level));
-                    scoreResults.add(new Score(user, userMaxScore));
+                    userMaxScore = Collections.max(users.get(userEntry.getKey()).get(levelId));
+                    scoreResults.add(new GameBoard(userEntry.getKey(), userMaxScore));
 
                 }
+                if (++index >= MAX_RESULT_LIST) break;
             }
+
         }
 
 		Collections.sort(scoreResults);

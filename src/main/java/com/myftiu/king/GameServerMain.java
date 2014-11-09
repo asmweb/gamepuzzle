@@ -1,6 +1,8 @@
 package com.myftiu.king;
 
 import com.myftiu.king.filter.CustomFilter;
+import com.myftiu.king.server.GameServer;
+import com.myftiu.king.server.GameServerImpl;
 import com.myftiu.king.service.CustomHandler;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
@@ -12,45 +14,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by myftiu on 04/11/14.
+ * @author by ali myftiu.
  */
 public class GameServerMain {
 
 
-    private final static int SERVER_PORT = 8009;
+
 	private final static Logger LOGGER = Logger.getLogger(GameServerMain.class.getName());
-    private  HttpServer server;
+    private static final GameServer gameServer = new GameServerImpl();
+
 
 
 	public static void main(String[] args) throws IOException {
-        GameServerMain gameServerMain = new GameServerMain();
-        gameServerMain.startServer();
+        addServerShutdownHook();
+        LOGGER.log(Level.INFO, "Server is going to start");
+        gameServer.startServer();
+    }
+
+    private static void addServerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                LOGGER.log(Level.INFO, "Stopping server");
+                gameServer.stopServer();
+            }
+        });
     }
 
 
-    public void startServer() throws IOException {
-
-        server = HttpServer.create(new InetSocketAddress(SERVER_PORT), 0);
-
-
-        HttpContext context = server.createContext("/", new CustomHandler());
-
-        // Custom filtering the user calls
-        context.getFilters().add(new CustomFilter());
-
-        // A thread pool is created
-        server.setExecutor(Executors.newCachedThreadPool());
-
-
-        server.start();
-
-        LOGGER.log(Level.INFO, "Server started!");
-    }
-
-
-    public void stopServer() {
-        if(server != null) server.stop(0);
-    }
 
 
 }

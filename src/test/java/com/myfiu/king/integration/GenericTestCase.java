@@ -1,15 +1,18 @@
 package com.myfiu.king.integration;
 
+import com.myftiu.king.server.GameServer;
+import com.myftiu.king.server.GameServerImpl;
 import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-import com.myftiu.king.GameServerMain;
+import org.mockito.Mock;
+
+import com.sun.net.httpserver.HttpExchange;
 
 /**
  * @author by ali myftiu on 07/11/14.
@@ -18,19 +21,24 @@ import com.myftiu.king.GameServerMain;
 
 public class GenericTestCase {
 
-	private  GameServerMain gameServerMain;
+	private static final GameServer gameServer = new GameServerImpl();
+
+    @Mock
+    protected HttpExchange exchange;
+
+    @Mock
+    protected OutputStream outputStream;
 
 
 	@Before
 	public  void startServer() throws IOException {
-		gameServerMain = new GameServerMain();
-		gameServerMain.startServer();
+        gameServer.startServer();
 
 	}
 
 	@After
 	public  void stopServer() throws IOException {
-		gameServerMain.stopServer();
+        gameServer.stopServer();
 	}
 
 	protected HttpURLConnection createConnection(String url, String requestMethod) throws IOException
