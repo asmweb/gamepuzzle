@@ -2,17 +2,17 @@ package com.myfiu.king.integration;
 
 import com.myftiu.king.server.GameServer;
 import com.myftiu.king.server.GameServerImpl;
-import org.junit.*;
+import com.sun.net.httpserver.HttpExchange;
+import org.junit.After;
+import org.junit.Before;
+import org.mockito.Mock;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
-
-import org.mockito.Mock;
-
-import com.sun.net.httpserver.HttpExchange;
 
 /**
  * @author by ali myftiu on 07/11/14.

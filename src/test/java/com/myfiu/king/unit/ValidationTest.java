@@ -1,8 +1,8 @@
 package com.myfiu.king.unit;
 
 import com.myftiu.king.exception.GamePuzzleException;
-import com.myftiu.king.service.ScoreService;
-import com.myftiu.king.service.SessionService;
+import com.myftiu.king.service.impl.SessionServiceImpl;
+import com.myftiu.king.service.impl.ScoreServiceImpl;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -17,8 +17,8 @@ public class ValidationTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-    private SessionService sessionService = new SessionService();
-    private ScoreService scoreService = new ScoreService();
+    private SessionServiceImpl sessionService = new SessionServiceImpl();
+    private ScoreServiceImpl scoreService = new ScoreServiceImpl();
 
     @Test
     public void shouldFailCreatingNewUser() throws GamePuzzleException, IOException {

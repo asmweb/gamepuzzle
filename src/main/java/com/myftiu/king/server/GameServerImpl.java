@@ -3,6 +3,10 @@ package com.myftiu.king.server;
 import com.myftiu.king.ServerConfig;
 import com.myftiu.king.filter.CustomFilter;
 import com.myftiu.king.service.CustomHandler;
+import com.myftiu.king.service.ScoreService;
+import com.myftiu.king.service.SessionService;
+import com.myftiu.king.service.impl.ScoreServiceImpl;
+import com.myftiu.king.service.impl.SessionServiceImpl;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 
@@ -19,13 +23,18 @@ public class GameServerImpl implements GameServer {
 
     private HttpServer server;
     private final static Logger LOGGER = Logger.getLogger(GameServerImpl.class.getName());
+    private SessionService sessionService;
+    private ScoreService scoreService;
+
 
     public void startServer() throws IOException {
 
+        sessionService = new SessionServiceImpl();
+        scoreService = new ScoreServiceImpl();
         server = HttpServer.create(new InetSocketAddress(ServerConfig.SERVER_PORT), 0);
 
 
-        HttpContext context = server.createContext("/", new CustomHandler());
+        HttpContext context = server.createContext("/", new CustomHandler(sessionService, scoreService));
 
         // Custom filtering the user calls
         context.getFilters().add(new CustomFilter());

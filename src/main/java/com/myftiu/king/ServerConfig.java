@@ -1,7 +1,5 @@
 package com.myftiu.king;
 
-import java.util.Set;
-
 /**
  * @author by ali myftiu.
  */

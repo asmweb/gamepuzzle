@@ -1,6 +1,7 @@
 package com.myfiu.king.integration;
 
 import com.myftiu.king.service.CustomHandler;
+import com.myftiu.king.service.impl.SessionServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -11,8 +12,6 @@ import java.net.HttpURLConnection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author by ali myftiu.
@@ -23,8 +22,6 @@ public class GamePuzzleTest extends GenericTestCase
 {
 
 	private HttpURLConnection httpConnection;
-    private final CustomHandler CUSTOM_HANDLER = new CustomHandler();
-
 
 	@Test
 	public void shouldCreateNewUser() throws IOException

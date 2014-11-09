@@ -1,24 +1,14 @@
 package com.myfiu.king.unit;
 
 import com.myftiu.king.exception.GamePuzzleException;
-import com.myftiu.king.service.CustomHandler;
-import com.myftiu.king.service.ScoreService;
-import com.myftiu.king.service.SessionService;
-import com.sun.net.httpserver.HttpExchange;
+import com.myftiu.king.service.impl.ScoreServiceImpl;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.IOException;
-
-
-import static org.mockito.Mockito.*;
-
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 /**
  * @author by ali myftiu.
@@ -30,7 +20,7 @@ public class GamePuzzleTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-    private ScoreService scoreService = new ScoreService();
+    private ScoreServiceImpl scoreService = new ScoreServiceImpl();
 
     @Test
     public void shouldReturnTheHighestScore() throws GamePuzzleException {

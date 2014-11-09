@@ -1,7 +1,8 @@
 package com.myftiu.king.service;
 
 import com.myftiu.king.exception.GamePuzzleException;
-import com.myftiu.king.utils.ServerUtil;
+import com.myftiu.king.service.impl.ScoreServiceImpl;
+import com.myftiu.king.service.impl.SessionServiceImpl;
 import com.myftiu.king.utils.Validation;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -29,9 +30,9 @@ public class CustomHandler  implements HttpHandler {
 
 	private final static Logger LOGGER = Logger.getLogger(CustomHandler.class.getName());
 
-    public CustomHandler() {
-       this.sessionService = new SessionService();
-       this.scoreService = new ScoreService();
+    public CustomHandler(SessionService sessionService, ScoreService scoreService) {
+       this.sessionService = sessionService;
+       this.scoreService = scoreService;
     }
 
 		/**
