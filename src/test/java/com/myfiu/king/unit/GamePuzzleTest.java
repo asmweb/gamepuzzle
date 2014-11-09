@@ -2,6 +2,8 @@ package com.myfiu.king.unit;
 
 import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.service.impl.ScoreServiceImpl;
+import com.myftiu.king.service.impl.SessionServiceImpl;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -22,6 +24,14 @@ public class GamePuzzleTest {
 
     private ScoreServiceImpl scoreService = new ScoreServiceImpl();
 
+
+
+
+    @Before
+    public void initTest() {
+
+    }
+
     @Test
     public void shouldReturnTheHighestScore() throws GamePuzzleException {
 
@@ -39,6 +49,8 @@ public class GamePuzzleTest {
         assertEquals("411=5101\n341=3213\n121=1101", result);
 
     }
+
+
 
 
 

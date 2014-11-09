@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 public class SessionServiceImpl implements SessionService {
 
     private volatile Map<String,Session> usedSessionKeys = new ConcurrentHashMap<>();
-    private long lastCleanup = Calendar.getInstance().getTimeInMillis();
+    private long lastCleanup;
     private final static Logger LOGGER = Logger.getLogger(SessionServiceImpl.class.getName());
 
 
