@@ -39,6 +39,6 @@ public class GameScore implements Comparable<GameScore>{
 
     @Override
     public int compareTo(GameScore o) {
-        return Integer.compare(o.getScore(), this.getScore());
+        return Integer.compare(this.getScore(), o.getScore());
     }
 }

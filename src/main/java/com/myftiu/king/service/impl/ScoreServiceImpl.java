@@ -40,23 +40,25 @@ public class ScoreServiceImpl implements ScoreService {
     public void insertScore(int userid, int levelid, int score) throws GamePuzzleException
 	{
 
-        List<GameScore> addScore ;
+        List<GameScore> addScore;
+        GameUser gameUser = new GameUser(userid);
+        GameLevel gameLevel = new GameLevel(levelid);
 
         Validation.validateAddingScore(userid, levelid, score);
 
         synchronized(users) {
 
 
-            if (users.containsKey(userid)) {
+            if (users.containsKey(gameUser)) {
 
-                Map<GameLevel,List<GameScore>> storedUserLevels = users.get(userid);
+                Map<GameLevel,List<GameScore>> storedUserLevels = users.get(gameUser);
 
                 LOGGER.log(Level.INFO, "user " + userid + " was found");
 
-                if (storedUserLevels.containsKey(levelid)) {
+                if (storedUserLevels.containsKey(gameLevel)) {
 
                     LOGGER.log(Level.INFO, "adding a another score " + score + " for user's " + userid + " level " + levelid);
-                    List<GameScore> storedScores =  storedUserLevels.get(levelid);
+                    List<GameScore> storedScores =  storedUserLevels.get(gameLevel);
 
                     storedScores.add(new GameScore(score));
                 }
@@ -67,8 +69,8 @@ public class ScoreServiceImpl implements ScoreService {
                     addScore = Collections.synchronizedList(new ArrayList<GameScore>());
 
                     addScore.add(new GameScore(score));
-                    storedUserLevels.put(new GameLevel(levelid), addScore);
-                    users.put(new GameUser(userid), storedUserLevels);
+                    storedUserLevels.put(gameLevel, addScore);
+                    users.put(gameUser, storedUserLevels);
                 }
             } else {
 
@@ -76,8 +78,8 @@ public class ScoreServiceImpl implements ScoreService {
                 Map<GameLevel,List<GameScore>> addLevel = new ConcurrentHashMap<>();
                 addScore = Collections.synchronizedList(new ArrayList<GameScore>());
                 addScore.add(new GameScore(score));
-                addLevel.put(new GameLevel(levelid), addScore);
-                users.put(new GameUser(userid), addLevel);
+                addLevel.put(gameLevel, addScore);
+                users.put(gameUser, addLevel);
             }
         }
 

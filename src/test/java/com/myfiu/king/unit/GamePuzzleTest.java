@@ -1,5 +1,6 @@
 package com.myfiu.king.unit;
 
+import com.myftiu.king.ServerConfig;
 import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.service.impl.ScoreServiceImpl;
 import com.myftiu.king.service.impl.SessionServiceImpl;
@@ -50,10 +51,41 @@ public class GamePuzzleTest {
 
     }
 
+    @Test
+    public void shouldReturnOneScore() throws GamePuzzleException {
+
+        //given
+        scoreService.insertScore(121, 2, 1101);
+        scoreService.insertScore(121, 2, 5101);
+        scoreService.insertScore(121, 2, 3213);
+        scoreService.insertScore(121, 2, 9101);
 
 
+        //when
+        String result = scoreService.getHighestScores(2);
+
+        //then
+        assertEquals("121=9101", result);
+
+    }
 
 
+    @Test
+    public void shouldNotReturnMoreThanMaxResult() throws GamePuzzleException {
+
+        //given
+        for(int i=0; i<=(ServerConfig.MAX_RESULT_LIST+5); i++) {
+            scoreService.insertScore(121+i, 2, 11+i+i);
+        }
+
+        //when
+        String result = scoreService.getHighestScores(2);
+
+        //then
+        String resultArray[] = result.split("\n");
+        assertEquals(resultArray.length, ServerConfig.MAX_RESULT_LIST);
+
+    }
 
 
 }
