@@ -3,7 +3,7 @@ package com.myftiu.king.service;
 import com.myftiu.king.exception.GamePuzzleException;
 
 /**
- * Created by myftiu on 09/11/14.
+ * @author by ali myftiu.
  */
 public interface SessionService {
 

@@ -1,9 +1,11 @@
 package com.myftiu.king.exception;
 
+import java.io.IOException;
+
 /**
  * @author by ali myftiu.
  */
-public class GamePuzzleException extends Exception{
+public class GamePuzzleException extends IOException {
 
 	private int statusCode;
 

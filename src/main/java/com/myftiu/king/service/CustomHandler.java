@@ -108,7 +108,7 @@ public class CustomHandler  implements HttpHandler {
 		int userId = sessionService.validateSessionKey(sessionKey);
         Validation.validateUser(userId);
         scoreService.insertScore(userId, levelId,scoreNr);
-        responseCode = HttpURLConnection.HTTP_CREATED;
+        responseCode = HttpURLConnection.HTTP_OK;
         response = "";
 
 	}
@@ -136,7 +136,7 @@ public class CustomHandler  implements HttpHandler {
 	private void exceptionHandledResponse(String message, int statusCode) {
 		responseCode = statusCode;
 		response = message;
-		System.out.println(message);
+		LOGGER.log(Level.INFO, message);
 	}
 
 }

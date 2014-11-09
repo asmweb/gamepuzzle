@@ -38,7 +38,7 @@ public class GamePuzzleTest extends GenericTestCase
 
 		//then
 		assertNotNull(sessionKey);
-		assertEquals(status, 200);
+		assertEquals(status, HttpURLConnection.HTTP_OK);
 
 	}
 
@@ -66,6 +66,34 @@ public class GamePuzzleTest extends GenericTestCase
 		assertEquals(status, HttpURLConnection.HTTP_BAD_REQUEST);
 
 	}
+
+    @Test
+    public void shoulCreateNewScore() throws IOException
+    {
+        //given
+        String createUserUrl = "http://localhost:8009/411/login";
+        httpConnection = createConnection(createUserUrl, "GET");
+        String sessionKey = getResponseBody(httpConnection.getInputStream());
+        httpConnection.disconnect();
+        String score = "1500";
+
+        //when
+        String createScoreUrl = "http://localhost:8009/4711/score?sessionkey="+sessionKey;
+        httpConnection = createConnection(createScoreUrl, "POST");
+        httpConnection.setRequestProperty("Content-Type", "TEXT");
+        httpConnection.setRequestProperty("Content-Length", Integer.toString(score.length()));
+        httpConnection.setDoOutput(true);
+        OutputStream os = httpConnection.getOutputStream();
+        os.write(score.getBytes());
+        os.flush();
+        os.close();
+        httpConnection.disconnect();
+
+        //then
+        int status = httpConnection.getResponseCode();
+        assertEquals(status, HttpURLConnection.HTTP_OK);
+
+    }
 
     @Test
     public void shouldNotCreateNewSessionForActiveUser() throws IOException {

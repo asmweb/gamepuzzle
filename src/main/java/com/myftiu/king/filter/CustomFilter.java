@@ -1,16 +1,21 @@
 package com.myftiu.king.filter;
 
+import com.myftiu.king.ServerConfig;
+import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.utils.ServerUtil;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -18,7 +23,8 @@ import java.util.Scanner;
  */
 public class CustomFilter extends Filter {
 
-        ServerUtil utils;
+    private final static Logger LOGGER = Logger.getLogger(CustomFilter.class.getName());
+    private ServerUtil utils;
 
         public CustomFilter() {
             this.utils = new ServerUtil();
@@ -32,19 +38,25 @@ public class CustomFilter extends Filter {
      */
         public void doFilter(HttpExchange exchange, Chain chain) throws IOException {
 
-			switch (exchange.getRequestMethod().toLowerCase()) {
-				case "post":
-					parsePostParameters(exchange);
-					break;
-				case "get":
-					parseGetParameters(exchange);
-					break;
-				default:
-					throw new IOException("Method " + exchange.getRequestMethod() + "is not supported ");
-			}
+            try {
 
-            parseUrlEncodedParameters(exchange);
-            chain.doFilter(exchange);
+                switch (exchange.getRequestMethod().toLowerCase()) {
+                    case "post":
+                        parsePostParameters(exchange);
+                        break;
+                    case "get":
+                        parseGetParameters(exchange);
+                        break;
+                    default:
+                        throw new IOException("Method " + exchange.getRequestMethod() + "is not supported ");
+                }
+
+                parseUrlEncodedParameters(exchange);
+                chain.doFilter(exchange);
+            } catch (IOException ex) {
+                LOGGER.log(Level.INFO, "An exception " + ex.getMessage() + " occurred");
+                exceptionHandledResponse(ex.getMessage(), exchange);
+            }
         }
 
 
@@ -120,17 +132,34 @@ public class CustomFilter extends Filter {
 						parameters.put("request",params[2]);
 						break;
 					default:
-						throw new IOException("Request is not part of the api");
+						throw new IOException(ServerConfig.WRONG_API_REQUEST);
 
 				}
             } else {
-				throw new IOException("Request is not part of the api");
+				throw new IOException(ServerConfig.WRONG_API_REQUEST);
             }
         }
 
         @Override
         public String description() {
-            return "Custom filtering for retrieving correctly the parameters for get/post";
+            return ServerConfig.FILTER_DESCRIPTION;
         }
+
+
+    /**
+     *
+     * @param message
+     * @param exchange
+     */
+    private void exceptionHandledResponse(String message, HttpExchange exchange) throws IOException {
+
+        exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, message.length());
+        // sending response to client
+        OutputStream os = exchange.getResponseBody();
+        os.write(message.toString().getBytes());
+        os.close();
+        LOGGER.log(Level.INFO, message);
+    }
+
 
 }

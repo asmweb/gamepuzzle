@@ -8,11 +8,9 @@ import java.util.UUID;
 public class SessionUtil {
 
 
-    /*
-     * Usage: create a new session key
+    /**
      *
-     * Returns:
-     *    Session key
+     * @return  unique uuid
      */
     public static String createSessionKey() {
         UUID uniqueUUID = UUID.randomUUID();
