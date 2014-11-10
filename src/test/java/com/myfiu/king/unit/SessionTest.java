@@ -70,9 +70,9 @@ public class SessionTest {
 
 		//when
 		String sessionKey = sessionService.createSession(user);
-		int retrivedUser = sessionService.validateSessionKey(sessionKey);
+		int retriedUser = sessionService.validateSessionKey(sessionKey);
 
-		assertEquals(user, retrivedUser);
+		assertEquals(user, retriedUser);
 
 
 	}
