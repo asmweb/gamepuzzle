@@ -1,8 +1,10 @@
 package com.myfiu.king.unit;
 
 import com.myftiu.king.exception.GamePuzzleException;
+import com.myftiu.king.service.TimeDefinition;
 import com.myftiu.king.service.impl.SessionServiceImpl;
 import com.myftiu.king.service.impl.ScoreServiceImpl;
+import com.myftiu.king.service.impl.TimeDefinitionImpl;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -16,8 +18,8 @@ public class ValidationTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
-    private SessionServiceImpl sessionService = new SessionServiceImpl();
+	private TimeDefinition timeDefinition = new TimeDefinitionImpl();
+    private SessionServiceImpl sessionService = new SessionServiceImpl(timeDefinition);
     private ScoreServiceImpl scoreService = new ScoreServiceImpl();
 
     @Test

@@ -4,6 +4,7 @@ import com.myftiu.king.ServerConfig;
 import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.model.Session;
 import com.myftiu.king.service.SessionService;
+import com.myftiu.king.service.TimeDefinition;
 import com.myftiu.king.utils.SessionUtil;
 import com.myftiu.king.utils.Validation;
 
@@ -20,12 +21,16 @@ import java.util.logging.Logger;
 public class SessionServiceImpl implements SessionService {
 
     private volatile Map<String,Session> usedSessionKeys = new ConcurrentHashMap<>();
-    private long lastCleanup;
+    private TimeDefinition timeDefinition;
     private final static Logger LOGGER = Logger.getLogger(SessionServiceImpl.class.getName());
 
 
+	public SessionServiceImpl(TimeDefinition timeDefinition)
+	{
+		this.timeDefinition = timeDefinition;
+	}
 
-    /**
+	/**
      * Method creates a new session key for the given userId
      * @param user
      * @return session key for the user
@@ -67,7 +72,7 @@ public class SessionServiceImpl implements SessionService {
     public int validateSessionKey(String sessionKey) throws GamePuzzleException
     {
         if (sessionKey == null || sessionKey == "") {
-            throw new GamePuzzleException("Unauthorized user", HttpURLConnection.HTTP_UNAUTHORIZED);
+            throw new GamePuzzleException(ServerConfig.UNAUTHORIZED_USER, HttpURLConnection.HTTP_UNAUTHORIZED);
         }
         synchronized (usedSessionKeys) {
 
@@ -78,7 +83,7 @@ public class SessionServiceImpl implements SessionService {
             long currentTime = Calendar.getInstance().getTimeInMillis();
 
             if (session == null) {
-                throw new GamePuzzleException("Unauthorized user", HttpURLConnection.HTTP_UNAUTHORIZED);
+                throw new GamePuzzleException(ServerConfig.UNAUTHORIZED_USER, HttpURLConnection.HTTP_UNAUTHORIZED);
             } else if (currentTime - session.getStoredTime() > ServerConfig.MAX_SESSION_TIME) {
                 throw new GamePuzzleException("Session has expired", HttpURLConnection.HTTP_FORBIDDEN);
             }
@@ -93,7 +98,7 @@ public class SessionServiceImpl implements SessionService {
      */
     private void cleanSessions() {
         synchronized (usedSessionKeys) {
-            lastCleanup = Calendar.getInstance().getTimeInMillis();
+            long lastCleanup = timeDefinition.getCurrentTime();
             LOGGER.log(Level.INFO, "Cleaning up session at " + lastCleanup);
             for(Map.Entry<String,Session> entry: usedSessionKeys.entrySet()) {
                 if (lastCleanup - entry.getValue().getStoredTime() > ServerConfig.MAX_SESSION_TIME) {

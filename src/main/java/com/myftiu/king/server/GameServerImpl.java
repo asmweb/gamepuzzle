@@ -5,8 +5,10 @@ import com.myftiu.king.filter.CustomFilter;
 import com.myftiu.king.service.CustomHandler;
 import com.myftiu.king.service.ScoreService;
 import com.myftiu.king.service.SessionService;
+import com.myftiu.king.service.TimeDefinition;
 import com.myftiu.king.service.impl.ScoreServiceImpl;
 import com.myftiu.king.service.impl.SessionServiceImpl;
+import com.myftiu.king.service.impl.TimeDefinitionImpl;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 
@@ -25,11 +27,13 @@ public class GameServerImpl implements GameServer {
     private final static Logger LOGGER = Logger.getLogger(GameServerImpl.class.getName());
     private SessionService sessionService;
     private ScoreService scoreService;
+	private TimeDefinition timeDefinition;
 
 
     public void startServer() throws IOException {
 
-        sessionService = new SessionServiceImpl();
+		timeDefinition = new TimeDefinitionImpl();
+        sessionService = new SessionServiceImpl(timeDefinition);
         scoreService = new ScoreServiceImpl();
         server = HttpServer.create(new InetSocketAddress(ServerConfig.SERVER_PORT), 0);
 

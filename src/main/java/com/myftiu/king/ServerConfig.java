@@ -13,6 +13,7 @@ public class ServerConfig {
     public static final int MAX_RESULT_LIST = 15;
     public static final String WRONG_API_REQUEST = "Request is not part of the api";
     public static final String FILTER_DESCRIPTION = "Custom filtering for retrieving correctly the parameters for get/post";
+	public static final String UNAUTHORIZED_USER =  "Unauthorized user";
 
     /**
      * This is a pure utility class, no need to be instantiated
