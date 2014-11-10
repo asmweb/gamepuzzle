@@ -102,7 +102,7 @@ public class CustomHandler  implements HttpHandler {
 
 		String sessionKey = (String)params.get("sessionkey");
 		int levelId = Integer.parseInt((String)params.get("levelid"));
-		int scoreNr = Integer.parseInt((String)params.get("points"));
+		int scoreNr = Integer.parseInt((String)params.get("score"));
 		int userId = sessionService.validateSessionKey(sessionKey);
         Validation.validateUser(userId);
         scoreService.insertScore(userId, levelId,scoreNr);

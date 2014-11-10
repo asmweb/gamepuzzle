@@ -90,11 +90,11 @@ public class CustomFilter extends Filter {
 			Map<String, Object> parameters = (Map<String, Object>)exchange.getAttribute("parameters");
 			if(parameters == null){
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                throw new IOException("GameUser was not found");
+                throw new IOException(ServerConfig.USER_NOT_FOUND);
 
             }
 			Scanner scanner = new Scanner(exchange.getRequestBody());
-			String query = "points="+scanner.nextLine();
+			String query = "score="+scanner.nextLine();
 			utils.parseRequest(query, parameters);
 
         }

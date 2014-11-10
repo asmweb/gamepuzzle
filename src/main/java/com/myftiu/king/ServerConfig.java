@@ -14,6 +14,7 @@ public class ServerConfig {
     public static final String WRONG_API_REQUEST = "Request is not part of the api";
     public static final String FILTER_DESCRIPTION = "Custom filtering for retrieving correctly the parameters for get/post";
 	public static final String UNAUTHORIZED_USER =  "Unauthorized user";
+	public static final String USER_NOT_FOUND = "The user was not found";
 
     /**
      * This is a pure utility class, no need to be instantiated
