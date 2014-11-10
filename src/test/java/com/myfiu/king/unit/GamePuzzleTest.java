@@ -3,7 +3,6 @@ package com.myfiu.king.unit;
 import com.myftiu.king.ServerConfig;
 import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.service.impl.ScoreServiceImpl;
-import com.myftiu.king.service.impl.SessionServiceImpl;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

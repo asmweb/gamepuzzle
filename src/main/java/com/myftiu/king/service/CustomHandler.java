@@ -1,8 +1,6 @@
 package com.myftiu.king.service;
 
 import com.myftiu.king.exception.GamePuzzleException;
-import com.myftiu.king.service.impl.ScoreServiceImpl;
-import com.myftiu.king.service.impl.SessionServiceImpl;
 import com.myftiu.king.utils.Validation;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;

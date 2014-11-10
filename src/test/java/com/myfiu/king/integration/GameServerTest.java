@@ -1,15 +1,10 @@
 package com.myfiu.king.integration;
 
-import com.myftiu.king.ServerConfig;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 
 import static org.junit.Assert.assertEquals;

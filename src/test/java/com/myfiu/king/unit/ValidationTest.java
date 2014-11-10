@@ -2,8 +2,8 @@ package com.myfiu.king.unit;
 
 import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.service.TimeDefinition;
-import com.myftiu.king.service.impl.SessionServiceImpl;
 import com.myftiu.king.service.impl.ScoreServiceImpl;
+import com.myftiu.king.service.impl.SessionServiceImpl;
 import com.myftiu.king.service.impl.TimeDefinitionImpl;
 import org.junit.Rule;
 import org.junit.Test;

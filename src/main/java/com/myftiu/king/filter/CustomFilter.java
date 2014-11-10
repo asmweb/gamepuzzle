@@ -1,7 +1,6 @@
 package com.myftiu.king.filter;
 
 import com.myftiu.king.ServerConfig;
-import com.myftiu.king.exception.GamePuzzleException;
 import com.myftiu.king.utils.ServerUtil;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;

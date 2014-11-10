@@ -1,7 +1,5 @@
 package com.myfiu.king.integration;
 
-import com.myftiu.king.service.CustomHandler;
-import com.myftiu.king.service.impl.SessionServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
