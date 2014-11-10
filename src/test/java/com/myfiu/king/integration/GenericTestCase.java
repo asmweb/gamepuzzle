@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.Scanner;
 
 /**
- * @author by ali myftiu on 07/11/14.
+ * @author by ali myftiu.
  */
 
 

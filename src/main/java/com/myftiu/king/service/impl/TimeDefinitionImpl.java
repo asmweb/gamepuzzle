@@ -5,7 +5,7 @@ import com.myftiu.king.service.TimeDefinition;
 import java.util.Calendar;
 
 /**
- * @author by ali myftiu on 10/11/14.
+ * @author by ali myftiu.
  */
 public class TimeDefinitionImpl implements TimeDefinition
 {
